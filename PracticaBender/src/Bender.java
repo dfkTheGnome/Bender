@@ -1,3 +1,6 @@
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Bender {
 	int posY = 0;
@@ -5,12 +8,15 @@ public class Bender {
 	int mPosY = 0;
 	int mPosX = 0;
 	char[][] mapa;
+	List teleportatorY = new LinkedList();
+	List teleportatorX = new LinkedList();
 	Bender(String mapa){
 	      this.mapa = mapBuilder(mapa);
 	    }
 	
 	String run(){
 	        String road = "";
+	        int[] nextT;
 	        Integer mira = 0;
 	      
 	        //este bucle inicia el camino de Bender, no se detendrá hasta que llegue a la mete
@@ -25,6 +31,11 @@ public class Bender {
 	            }
 
 	            road += forward(mira,road);
+	            if (mapa[posY][posX] == 'T'){
+		                nextT = teleport(posY,posX);
+		                posY = nextT[0];
+		                posX = nextT[1];
+		            }
 	        }
 
 	        return road;
@@ -64,6 +75,34 @@ public class Bender {
 	                    break;
 	            }
 	        return r;
+	    }
+
+	    int[] teleport (int y, int x){
+	        Iterator teleY = teleportatorY.iterator();
+	        Iterator teleX = teleportatorX.iterator();
+	        int intX;
+	        int intY;
+
+	        int[] minCoords = new int[2];
+	        int length;
+	        int minLength = 100;
+	        while (teleX.hasNext()) {
+
+	            intY = (int)teleY.next();
+	            intX = (int)teleX.next();
+	            length = (y - intY) + (x - intX);
+	            if (length < 0 ) length *= -1;
+
+	            if ( length  < minLength && !(intY == posY && intX == posX)){
+
+	                minCoords[0] = intY;
+	                minCoords[1] = intX;
+	                minLength = length;
+	                if (minLength < 0 ) minLength *= -1;
+	            }
+	        }
+	      //  System.out.println("teletransportado de "+posY+" "+posX+" a: "+minCoords[0]+" "+minCoords[1]+" distancia: "+minLength);
+	        return minCoords;
 	    }
 	String bestRun(){
 	        return null;
@@ -107,7 +146,10 @@ public class Bender {
                    mPosY = i;
                    mPosX = j;
                }
-              
+               if(m.charAt(cont) == 'T'){
+                    teleportatorY.add(i);
+                    teleportatorX.add(j);
+                }
                mapa[i][j] = m.charAt(cont);
                cont++;
            }
