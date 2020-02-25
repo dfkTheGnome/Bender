@@ -9,9 +9,62 @@ public class Bender {
 	      this.mapa = mapBuilder(mapa);
 	    }
 	
-	String run() {
-		return null;
-	}
+	String run(){
+	        String road = "";
+	        Integer mira = 0;
+	      
+	        //este bucle inicia el camino de Bender, no se detendrá hasta que llegue a la mete
+	        //cuyas coordenadas estan almacenadas en mPosY y en mPosX
+
+	        while (!(posX == mPosX && posY == mPosY)) {
+	    
+	            while (tryForward(posY,posX,mira) == '#') {
+	                mira++;
+	                if (mira > 3) mira = 0;
+	               
+	            }
+
+	            road += forward(mira,road);
+	        }
+
+	        return road;
+	    }
+	
+	char tryForward(int y , int x, int mira){
+
+	        switch (mira){
+
+	            case 0: y++; break;
+	            case 1: x++; break;
+	            case 2:y--; break;
+	            case 3: x--; break;
+	        }
+	        return mapa[y][x];
+	    }
+
+	    String forward(int mira, String r){
+
+	            switch (mira) {
+
+	                case 0:
+	                    posY++;
+	                    r = "S";
+	                    break;
+	                case 1:
+	                    posX++;
+	                    r = "E";
+	                    break;
+	                case 2:
+	                    posY--;
+	                    r = "N";
+	                    break;
+	                case 3:
+	                    posX--;
+	                    r = "W";
+	                    break;
+	            }
+	        return r;
+	    }
 	String bestRun(){
 	        return null;
 	    }
